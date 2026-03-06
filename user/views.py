@@ -5,6 +5,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from .serializers import UserSerializer, CreateUserSerializer
 from .models import User
+from rest_framework.permissions import IsAuthenticated
 
 class UserDetailsView(APIView):
     @swagger_auto_schema(responses={200: UserSerializer})
@@ -33,4 +34,13 @@ class CreateUserView(APIView):
             return Response(serilaizer.data, status=status.HTTP_201_CREATED)
         return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class ProfileVie(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(responses={200: UserSerializer})
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
